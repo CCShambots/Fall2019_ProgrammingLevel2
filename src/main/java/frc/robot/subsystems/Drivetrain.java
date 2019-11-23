@@ -71,7 +71,7 @@ public class Drivetrain extends Subsystem {
      /*
     * Shifter
     */
-    shifter = new DoubleSolenoid(0, 1);
+    shifter = new DoubleSolenoid(2, 3);
   }
 
   @Override
