@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.DriveToDistance;
 import frc.robot.commands.DriveToDistancePID;
+import frc.robot.commands.DriveToAngle;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -29,15 +30,18 @@ public class OI {
   private Joystick driverJoystick;
   private Button a_button;
   private Button b_button;
+  private Button x_button;
 
 
   public OI() {
     driverJoystick = new Joystick(RobotMap.DRIVER_JOYSTICK_PORT);
     a_button = new JoystickButton(driverJoystick, RobotMap.DRIVER_A_BUTTON);
     b_button = new JoystickButton(driverJoystick, RobotMap.DRIVER_B_BUTTON);
+    x_button = new JoystickButton(driverJoystick, RobotMap.DRIVER_X_BUTTON);
 
     a_button.whenPressed(new DriveToDistance(20000));
     b_button.whenPressed(new DriveToDistancePID(20000));
+    x_button.whenPressed(new DriveToAngle(90));
   }
 
   // There are a few additional built in buttons you can use. Additionally,

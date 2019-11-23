@@ -36,8 +36,13 @@ public class RobotMap {
 
   public static final int DRIVER_A_BUTTON = 1;
   public static final int DRIVER_B_BUTTON = 2;
+  public static final int DRIVER_X_BUTTON = 3;
 
   public static final double PID_P = .5;
   public static final double PID_I = 0;
   public static final double PID_D = 5;
+
+  public static final double gyro_P = .01;
+  public static final double gyro_I = .001;
+  public static final double gyro_D = 0;
 }

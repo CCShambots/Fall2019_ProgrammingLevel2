@@ -10,8 +10,14 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.ctre.phoenix.sensors.PigeonIMU;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import frc.robot.PigeonPIDWrapper;
 import frc.robot.RobotMap;
 import frc.robot.commands.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,7 +32,15 @@ public class Drivetrain extends Subsystem {
   private TalonSRX leftMotor;
   private TalonSRX rightMotor;
 
+  private PigeonIMU pigeon;
+
+  private DoubleSolenoid shifter;
+
   public Drivetrain() {
+
+    /*
+    * Motor Controllers
+    */
     leftMotor = new TalonSRX(RobotMap.LEFTMOTOR_CANID);
     rightMotor = new TalonSRX(RobotMap.RIGHTMOTOR_CANID);
 
@@ -47,6 +61,17 @@ public class Drivetrain extends Subsystem {
     rightMotor.config_kP(0, RobotMap.PID_P);
     rightMotor.config_kI(0, RobotMap.PID_I);
     rightMotor.config_kD(0, RobotMap.PID_D);
+
+     /*
+    * Gyroscope
+    */
+    pigeon = new PigeonIMU(12);
+    pigeon.setFusedHeading(0);
+
+     /*
+    * Shifter
+    */
+    shifter = new DoubleSolenoid(0, 1);
   }
 
   @Override
@@ -91,11 +116,27 @@ public class Drivetrain extends Subsystem {
     return rightMotor.getSelectedSensorPosition();
   }
 
+  public PIDController getPidController() {
+    PigeonPIDWrapper wrapper = new PigeonPIDWrapper(pigeon);
+    PIDController outputController = new PIDController(RobotMap.gyro_P, RobotMap.gyro_I, RobotMap.gyro_D, wrapper, wrapper);
+    return outputController;
+  }
+
+  public void shiftUp(){
+    shifter.set(Value.kForward);
+  }
+
+  public void shiftDown(){
+    shifter.set(Value.kReverse);
+  }
+
   public void log() {
     SmartDashboard.putNumber("Left Motor Output", leftMotor.getMotorOutputPercent());
     SmartDashboard.putNumber("Right Motor Output", rightMotor.getMotorOutputPercent());
     SmartDashboard.putNumber("Left Encoder Value", leftMotor.getSelectedSensorPosition());
     SmartDashboard.putNumber("Right Encoder Value", rightMotor.getSelectedSensorPosition());
+
+    SmartDashboard.putNumber("Gyroscope Heading", pigeon.getFusedHeading());
   }
 
 }
